@@ -1,147 +1,263 @@
-<h1 align="center">
-  <a href="https://reactnative.dev/">
-    React Native
-  </a>
-</h1>
+Folly: Facebook Open-source Library
+===================================
 
-<p align="center">
-  <strong>Learn once, write anywhere:</strong><br>
-  Build mobile apps with React.
-</p>
+<a href="https://opensource.facebook.com/support-ukraine">
+  <img src="https://img.shields.io/badge/Support-Ukraine-FFD500?style=flat&labelColor=005BBB" alt="Support Ukraine - Help Provide Humanitarian Aid to Ukraine." />
+</a>
 
-<p align="center">
-  <a href="https://github.com/facebook/react-native/blob/HEAD/LICENSE">
-    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="React Native is released under the MIT license." />
-  </a>
-  <a href="https://circleci.com/gh/facebook/react-native">
-    <img src="https://circleci.com/gh/facebook/react-native.svg?style=shield" alt="Current CircleCI build status." />
-  </a>
-  <a href="https://www.npmjs.org/package/react-native">
-    <img src="https://img.shields.io/npm/v/react-native?color=brightgreen&label=npm%20package" alt="Current npm package version." />
-  </a>
-  <a href="https://reactnative.dev/docs/contributing">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome!" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=reactnative">
-    <img src="https://img.shields.io/twitter/follow/reactnative.svg?label=Follow%20@reactnative" alt="Follow @reactnative" />
-  </a>
-</p>
+# What is `folly`?
 
-<h3 align="center">
-  <a href="https://reactnative.dev/docs/getting-started">Getting Started</a>
-  <span> · </span>
-  <a href="https://reactnative.dev/docs/tutorial">Learn the Basics</a>
-  <span> · </span>
-  <a href="https://reactnative.dev/showcase">Showcase</a>
-  <span> · </span>
-  <a href="https://reactnative.dev/docs/contributing">Contribute</a>
-  <span> · </span>
-  <a href="https://reactnative.dev/help">Community</a>
-  <span> · </span>
-  <a href="https://github.com/facebook/react-native/blob/HEAD/.github/SUPPORT.md">Support</a>
-</h3>
+<img src="static/logo.svg" alt="Logo Folly" width="15%" align="right" />
 
-React Native brings [**React**'s][r] declarative UI framework to iOS and Android. With React Native, you use native UI controls and have full access to the native platform.
+Folly (acronymed loosely after Facebook Open Source Library) is a
+library of C++14 components designed with practicality and efficiency
+in mind. **Folly contains a variety of core library components used extensively
+at Facebook**. In particular, it's often a dependency of Facebook's other
+open source C++ efforts and place where those projects can share code.
 
-- **Declarative.** React makes it painless to create interactive UIs. Declarative views make your code more predictable and easier to debug.
-- **Component-Based.** Build encapsulated components that manage their state, then compose them to make complex UIs.
-- **Developer Velocity.** See local changes in seconds. Changes to JavaScript code can be live reloaded without rebuilding the native app.
-- **Portability.** Reuse code across iOS, Android, and [other platforms][p].
+It complements (as opposed to competing against) offerings
+such as Boost and of course `std`. In fact, we embark on defining our
+own component only when something we need is either not available, or
+does not meet the needed performance profile. We endeavor to remove
+things from folly if or when `std` or Boost obsoletes them.
 
-React Native is developed and supported by many companies and individual core contributors. Find out more in our [ecosystem overview][e].
+Performance concerns permeate much of Folly, sometimes leading to
+designs that are more idiosyncratic than they would otherwise be (see
+e.g. `PackedSyncPtr.h`, `SmallLocks.h`). Good performance at large
+scale is a unifying theme in all of Folly.
 
-[r]: https://reactjs.org/
-[p]: https://reactnative.dev/docs/out-of-tree-platforms
-[e]: https://github.com/facebook/react-native/blob/HEAD/ECOSYSTEM.md
+## Check it out in the intro video
+[![Explain Like I’m 5: Folly](https://img.youtube.com/vi/Wr_IfOICYSs/0.jpg)](https://www.youtube.com/watch?v=Wr_IfOICYSs)
 
-## Contents
+# Logical Design
 
-- [Requirements](#-requirements)
-- [Building your first React Native app](#-building-your-first-react-native-app)
-- [Documentation](#-documentation)
-- [Upgrading](#-upgrading)
-- [How to Contribute](#-how-to-contribute)
-- [Code of Conduct](#code-of-conduct)
-- [License](#-license)
+Folly is a collection of relatively independent components, some as
+simple as a few symbols. There is no restriction on internal
+dependencies, meaning that a given folly module may use any other
+folly components.
 
+All symbols are defined in the top-level namespace `folly`, except of
+course macros. Macro names are ALL_UPPERCASE and should be prefixed
+with `FOLLY_`. Namespace `folly` defines other internal namespaces
+such as `internal` or `detail`. User code should not depend on symbols
+in those namespaces.
 
-## 📋 Requirements
+Folly has an `experimental` directory as well. This designation connotes
+primarily that we feel the API may change heavily over time. This code,
+typically, is still in heavy use and is well tested.
 
-React Native apps may target iOS 11.0 and Android 5.0 (API 21) or newer. You may use Windows, macOS, or Linux as your development operating system, though building and running iOS apps is limited to macOS. Tools like [Expo](https://expo.io) can be used to work around this.
+# Physical Design
 
-## 🎉 Building your first React Native app
+At the top level Folly uses the classic "stuttering" scheme
+`folly/folly` used by Boost and others. The first directory serves as
+an installation root of the library (with possible versioning a la
+`folly-1.0/`), and the second is to distinguish the library when
+including files, e.g. `#include <folly/FBString.h>`.
 
-Follow the [Getting Started guide](https://reactnative.dev/docs/getting-started). The recommended way to install React Native depends on your project. Here you can find short guides for the most common scenarios:
+The directory structure is flat (mimicking the namespace structure),
+i.e. we don't have an elaborate directory hierarchy (it is possible
+this will change in future versions). The subdirectory `experimental`
+contains files that are used inside folly and possibly at Facebook but
+not considered stable enough for client use. Your code should not use
+files in `folly/experimental` lest it may break when you update Folly.
 
-- [Trying out React Native][hello-world]
-- [Creating a New Application][new-app]
-- [Adding React Native to an Existing Application][existing]
+The `folly/folly/test` subdirectory includes the unittests for all
+components, usually named `ComponentXyzTest.cpp` for each
+`ComponentXyz.*`. The `folly/folly/docs` directory contains
+documentation.
 
-[hello-world]: https://snack.expo.io/@hramos/hello,-world!
-[new-app]: https://reactnative.dev/docs/getting-started
-[existing]: https://reactnative.dev/docs/integration-with-existing-apps
+# What's in it?
 
-## 📖 Documentation
+Because of folly's fairly flat structure, the best way to see what's in it
+is to look at the headers in [top level `folly/` directory](https://github.com/facebook/folly/tree/main/folly). You can also
+check the [`docs` folder](folly/docs) for documentation, starting with the
+[overview](folly/docs/Overview.md).
 
-The full documentation for React Native can be found on our [website][docs].
+Folly is published on GitHub at https://github.com/facebook/folly
 
-The React Native documentation discusses components, APIs, and topics that are specific to React Native. For further documentation on the React API that is shared between React Native and React DOM, refer to the [React documentation][r-docs].
+# Build Notes
 
-The source for the React Native documentation and website is hosted on a separate repo, [**@facebook/react-native-website**][repo-website].
+Because folly does not provide any ABI compatibility guarantees from commit to
+commit, we generally recommend building folly as a static library.
 
-[docs]: https://reactnative.dev/docs/getting-started
-[r-docs]: https://reactjs.org/docs/getting-started.html
-[repo-website]: https://github.com/facebook/react-native-website
+folly supports gcc (5.1+), clang, or MSVC. It should run on Linux (x86-32,
+x86-64, and ARM), iOS, macOS, and Windows (x86-64). The CMake build is only
+tested on some of these platforms; at a minimum, we aim to support macOS and
+Linux (on the latest Ubuntu LTS release or newer.)
 
-## 🚀 Upgrading
+## `getdeps.py`
 
-Upgrading to new versions of React Native may give you access to more APIs, views, developer tools, and other goodies. See the [Upgrading Guide][u] for instructions.
+This script is used by many of Meta's OSS tools.  It will download and build all of the necessary dependencies first, and will then invoke cmake etc to build folly.  This will help ensure that you build with relevant versions of all of the dependent libraries, taking into account what versions are installed locally on your system.
 
-React Native releases are discussed [in this discussion repo](https://github.com/reactwg/react-native-releases/discussions).
+It's written in python so you'll need python3.6 or later on your PATH.  It works on Linux, macOS and Windows.
 
-[u]: https://reactnative.dev/docs/upgrading
-[repo-releases]: https://github.com/react-native-community/react-native-releases
+The settings for folly's cmake build are held in its getdeps manifest `build/fbcode_builder/manifests/folly`, which you can edit locally if desired.
 
-## 👏 How to Contribute
+### Dependencies
 
-The main purpose of this repository is to continue evolving React Native core. We want to make contributing to this project as easy and transparent as possible, and we are grateful to the community for contributing bug fixes and improvements. Read below to learn how you can take part in improving React Native.
+If on Linux or MacOS (with homebrew installed) you can install system dependencies to save building them:
 
-### [Code of Conduct][code]
+    # Clone the repo
+    git clone https://github.com/facebook/folly
+    # Install dependencies
+    cd folly
+    sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive
 
-Facebook has adopted a Code of Conduct that we expect project participants to adhere to.
-Please read the [full text][code] so that you can understand what actions will and will not be tolerated.
+If you'd like to see the packages before installing them:
 
-[code]: https://code.fb.com/codeofconduct/
+    ./build/fbcode_builder/getdeps.py install-system-deps --dry-run --recursive
 
-### [Contributing Guide][contribute]
+On other platforms or if on Linux and without system dependencies `getdeps.py` will mostly download and build them for you during the build step.
 
-Read our [**Contributing Guide**][contribute] to learn about our development process, how to propose bugfixes and improvements, and how to build and test your changes to React Native.
+Some of the dependencies `getdeps.py` uses and installs are:
 
-[contribute]: https://reactnative.dev/docs/contributing
+  * a version of boost compiled with C++14 support.
+  * googletest is required to build and run folly's tests
 
-### [Open Source Roadmap][roadmap]
+### Build
 
-You can learn more about our vision for React Native in the [**Roadmap**][roadmap].
+This script will download and build all of the necessary dependencies first,
+and will then invoke cmake etc to build folly.  This will help ensure that you build with relevant versions of all of the dependent libraries, taking into account what versions are installed locally on your system.
 
-[roadmap]: https://github.com/facebook/react-native/wiki/Roadmap
+`getdeps.py` currently requires python 3.6+ to be on your path.
 
-### Good First Issues
+`getdeps.py` will invoke cmake etc
 
-We have a list of [good first issues][gfi] that contain bugs which have a relatively limited scope. This is a great place to get started, gain experience, and get familiar with our contribution process.
+    # Clone the repo
+    git clone https://github.com/facebook/folly
+    cd folly
+    # Build, using system dependencies if available
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build
 
-[gfi]: https://github.com/facebook/react-native/labels/good%20first%20issue
+It puts output in its scratch area:
 
-### Discussions
+  * `installed/folly/lib/libfolly.a`: Library
 
-Larger discussions and proposals are discussed in [**@react-native-community/discussions-and-proposals**][repo-meta].
+You can also specify a `--scratch-path` argument to control
+the location of the scratch directory used for the build. You can find the default scratch install location from logs or with `python3 ./build/fbcode_builder/getdeps.py show-inst-dir`
 
-[repo-meta]: https://github.com/react-native-community/discussions-and-proposals
+There are also
+`--install-dir` and `--install-prefix` arguments to provide some more
+fine-grained control of the installation directories. However, given that
+folly provides no compatibility guarantees between commits we generally
+recommend building and installing the libraries to a temporary location, and
+then pointing your project's build at this temporary location, rather than
+installing folly in the traditional system installation directories.  e.g., if you are building with CMake you can use the `CMAKE_PREFIX_PATH` variable to allow CMake to find folly in this temporary installation directory when
+building your project.
 
-## 📄 License
+If you want to invoke `cmake` again to iterate, there is a helpful `run_cmake.py` script output in the scratch build directory.  You can find the scratch build directory from logs or with `python3 ./build/fbcode_builder/getdeps.py show-build-dir`
 
-React Native is MIT licensed, as found in the [LICENSE][l] file.
+### Run tests
 
-React Native documentation is Creative Commons licensed, as found in the [LICENSE-docs][ld] file.
+By default `getdeps.py` will build the tests for folly. To run them:
 
-[l]: https://github.com/facebook/react-native/blob/HEAD/LICENSE
-[ld]: https://github.com/facebook/react-native/blob/HEAD/LICENSE-docs
+    cd folly
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages test
+
+### `build.sh`/`build.bat` wrapper
+
+`build.sh` can be used on Linux and MacOS, on Windows use
+the `build.bat` script instead. Its a wrapper around `getdeps.py`
+
+## Build with cmake directly
+
+If you don't want to let getdeps invoke cmake for you then by default, building the tests is disabled as part of the CMake `all` target.
+To build the tests, specify `-DBUILD_TESTS=ON` to CMake at configure time.
+
+NB if you want to invoke `cmake` again to iterate on a `getdeps.py` build, there is a helpful `run_cmake.py` script output in the scratch-path build directory. You can find the scratch build directory from logs or with `python3 ./build/fbcode_builder/getdeps.py show-build-dir`
+
+Running tests with ctests also works if you cd to the build dir, e.g. `
+`(cd $(python3 ./build/fbcode_builder/getdeps.py show-build-dir) && ctest)`
+
+### Finding dependencies in non-default locations
+
+If you have boost, gtest, or other dependencies installed in a non-default
+location, you can use the `CMAKE_INCLUDE_PATH` and `CMAKE_LIBRARY_PATH`
+variables to make CMAKE look also look for header files and libraries in
+non-standard locations.  For example, to also search the directories
+`/alt/include/path1` and `/alt/include/path2` for header files and the
+directories `/alt/lib/path1` and `/alt/lib/path2` for libraries, you can invoke
+`cmake` as follows:
+
+```
+cmake \
+  -DCMAKE_INCLUDE_PATH=/alt/include/path1:/alt/include/path2 \
+  -DCMAKE_LIBRARY_PATH=/alt/lib/path1:/alt/lib/path2 ...
+```
+
+## Ubuntu LTS, CentOS Stream, Fedora
+
+Use the `getdeps.py` approach above. We test in CI on Ubuntu LTS, and occasionally on other distros.
+
+If you find the set of system packages is not quite right for your chosen distro,  you can specify distro version specific overrides in the dependency manifests (e.g. https://github.com/facebook/folly/blob/main/build/fbcode_builder/manifests/boost ).   You could probably make it work on most recent Ubuntu/Debian or Fedora/Redhat derived distributions.
+
+At time of writing (Dec 2021) there is a build break on GCC 11.x based systems in lang_badge_test.  If you don't need badge functionality you can work around by commenting it out from CMakeLists.txt (unfortunately fbthrift does need it)
+
+## Windows (Vcpkg)
+
+Note that many tests are disabled for folly Windows builds,  you can see them in the log from the cmake configure step, or by looking for WINDOWS_DISABLED in `CMakeLists.txt`
+
+That said, `getdeps.py` builds work on Windows and are tested in CI.
+
+If you prefer, you can try Vcpkg.  folly is available in [Vcpkg](https://github.com/Microsoft/vcpkg#vcpkg) and releases may be built via `vcpkg install folly:x64-windows`.
+
+You may also use `vcpkg install folly:x64-windows --head` to build against `main`.
+
+## macOS
+
+`getdeps.py` builds work on macOS and are tested in CI, however if you prefer, you can try one of the macOS package managers
+
+### Homebrew
+
+folly is available as a Formula and releases may be built via `brew install folly`.
+
+You may also use `folly/build/bootstrap-osx-homebrew.sh` to build against `main`:
+
+```
+  ./folly/build/bootstrap-osx-homebrew.sh
+```
+
+This will create a build directory `_build` in the top-level.
+
+### MacPorts
+
+Install the required packages from MacPorts:
+
+```
+  sudo port install \
+    boost \
+    cmake \
+    gflags \
+    git \
+    google-glog \
+    libevent \
+    libtool \
+    lz4 \
+    lzma \
+    openssl \
+    snappy \
+    xz \
+    zlib
+```
+
+Download and install double-conversion:
+
+```
+  git clone https://github.com/google/double-conversion.git
+  cd double-conversion
+  cmake -DBUILD_SHARED_LIBS=ON .
+  make
+  sudo make install
+```
+
+Download and install folly with the parameters listed below:
+
+```
+  git clone https://github.com/facebook/folly.git
+  cd folly
+  mkdir _build
+  cd _build
+  cmake ..
+  make
+  sudo make install
+```

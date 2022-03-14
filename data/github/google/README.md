@@ -1,89 +1,71 @@
-# Material Design Lite
+# Google Style Guides
 
-[![GitHub version](https://badge.fury.io/gh/google%2Fmaterial-design-lite.svg)](https://badge.fury.io/gh/google%2Fmaterial-design-lite)
-[![npm version](https://badge.fury.io/js/material-design-lite.svg)](https://badge.fury.io/js/material-design-lite)
-[![Bower version](https://badge.fury.io/bo/material-design-lite.svg)](https://badge.fury.io/bo/material-design-lite)
-[![Gitter version](https://img.shields.io/gitter/room/gitterHQ/gitter.svg)](https://gitter.im/google/material-design-lite)
-[![Dependency Status](https://david-dm.org/google/material-design-lite.svg)](https://david-dm.org/google/material-design-lite)
+Every major open-source project has its own style guide: a set of conventions
+(sometimes arbitrary) about how to write code for that project. It is much
+easier to understand a large codebase when all the code in it is in a
+consistent style.
 
-> An implementation of [Material Design](http://www.google.com/design/spec/material-design/introduction.html)
-components in vanilla CSS, JS, and HTML.
+“Style” covers a lot of ground, from “use camelCase for variable names” to
+“never use global variables” to “never use exceptions.” This project
+([google/styleguide](https://github.com/google/styleguide)) links to the
+style guidelines we use for Google code. If you are modifying a project that
+originated at Google, you may be pointed to this page to see the style guides
+that apply to that project.
 
-Material Design Lite (MDL) lets you add a Material Design look and feel to your
-static content websites. It doesn't rely on any JavaScript frameworks or
-libraries. Optimized for cross-device use, gracefully degrades in older
-browsers, and offers an experience that is accessible from the get-go.
+This project holds the [C++ Style Guide][cpp], [C# Style Guide][csharp],
+[Swift Style Guide][swift], [Objective-C Style Guide][objc],
+[Java Style Guide][java], [Python Style Guide][py], [R Style Guide][r],
+[Shell Style Guide][sh], [HTML/CSS Style Guide][htmlcss],
+[JavaScript Style Guide][js], [TypeScript Style Guide][ts], [AngularJS Style Guide][angular],
+[Common Lisp Style Guide][cl], and [Vimscript Style Guide][vim]. This project
+also contains [cpplint][cpplint], a tool to assist with style guide compliance,
+and [google-c-style.el][emacs], an Emacs settings file for Google style.
 
-> ### Limited support
+If your project requires that you create a new XML document format, the [XML
+Document Format Style Guide][xml] may be helpful. In addition to actual style
+rules, it also contains advice on designing your own vs. adapting an existing
+format, on XML instance document formatting, and on elements vs. attributes.
 
-> Material Design Lite is now in limited support, with development having moved to the
-> [Material Components for the web](https://github.com/material-components/material-components-web) repository.
+The style guides in this project are licensed under the CC-By 3.0 License,
+which encourages you to share these documents.
+See [https://creativecommons.org/licenses/by/3.0/][ccl] for more details.
 
-> No further development is taking place in MDL by the core team, but we are happy to review PRs, fix critical bugs and
-> push out new releases. No breaking changes will be accepted.
-
-## Use MDL on your site?
-
-**This document is targeted at developers that will contribute to or compile
-MDL. If you are looking to use MDL on your website or web app please head to
-[getmdl.io](http://getmdl.io).**
-
-## Browser Support
+The following Google style guides live outside of this project:
+[Go Code Review Comments][go] and [Effective Dart][dart].
 
 
-| IE9 | IE10 | IE11 | Chrome | Opera | Firefox | Safari | Chrome (Android) | Mobile Safari |
-|-----|------|------|--------|-------|---------|--------|------------------|---------------|
-| B   | A    | A    | A      | A     | A       | A      | A                | A             |
+## Contributing
 
-A-grade browsers are fully supported. B-grade browsers will gracefully degrade
-to our CSS-only experience.
+With few exceptions, these style guides are copies of Google's internal style guides
+to assist developers working on Google owned and originated open source projects.
+Changes to the style guides are made to the internal style guides first and
+eventually copied into the versions found here. **External contributions are
+not accepted.** 
+Pull requests are regularly closed without comment.
+Issues that raise questions, justify changes on technical merits,
+or point out obvious mistakes may get some engagement and could in theory lead to changes,
+but we are primarily optimizing for Google's internal needs.
 
-### Download / Clone
+<a rel="license" href="https://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/3.0/88x31.png" /></a>
 
-Clone the repo using Git:
+[cpp]: https://google.github.io/styleguide/cppguide.html
+[csharp]: https://google.github.io/styleguide/csharp-style.html
+[swift]: https://google.github.io/swift/
+[objc]: objcguide.md
+[java]: https://google.github.io/styleguide/javaguide.html
+[py]: https://google.github.io/styleguide/pyguide.html
+[r]: https://google.github.io/styleguide/Rguide.html
+[sh]: https://google.github.io/styleguide/shellguide.html
+[htmlcss]: https://google.github.io/styleguide/htmlcssguide.html
+[js]: https://google.github.io/styleguide/jsguide.html
+[ts]: https://google.github.io/styleguide/tsguide.html
+[angular]: https://google.github.io/styleguide/angularjs-google-style.html
+[cl]: https://google.github.io/styleguide/lispguide.xml
+[vim]: https://google.github.io/styleguide/vimscriptguide.xml
+[cpplint]: https://github.com/google/styleguide/tree/gh-pages/cpplint
+[emacs]: https://raw.githubusercontent.com/google/styleguide/gh-pages/google-c-style.el
+[xml]: https://google.github.io/styleguide/xmlstyle.html
+[go]: https://golang.org/wiki/CodeReviewComments
+[dart]: https://www.dartlang.org/guides/language/effective-dart
+[ccl]: https://creativecommons.org/licenses/by/3.0/
 
-```bash
-git clone https://github.com/google/material-design-lite.git
-```
-
-Alternatively you can [download](https://github.com/google/material-design-lite/archive/master.zip)
-this repository.
-
-Windows users, if you have trouble compiling due to line endings then make sure
-you configure git to checkout the repository with `lf` (unix) line endings. This
-can be achieved by setting `core.eol`.
-
-```bash
-git config core.eol lf
-git config core.autocrlf input
-git rm --cached -r .
-git reset --hard
-```
-
-> Remember, the master branch is considered unstable. Do not use this in
-production. Use a tagged state of the repository, npm, or bower for stability!
-
-## Feature requests
-
-MDL is currently in limited support mode, with no further development taking place by the core team.
-We are happy to accept and review pull requests for new functionality, however, as long as there are no breaking
-changes.
-
-## Want to contribute?
-
-If you found a bug, have any questions or want to contribute. Follow our
-[guidelines](https://github.com/google/material-design-lite/blob/mdl-1.x/CONTRIBUTING.md),
-and help improve the Material Design Lite. For more information visit our
-[wiki](https://github.com/google/material-design-lite/wiki).
-
-Please use the default branch, `mdl-1.x`.
-
-Take note that [Material Components for Web](https://github.com/material-components/material-components-web), which is MDL v2, is under early Alpha stages (which means everything is a moving target, and we can change anything at any moment). Use with caution.
-
-However, we would absolutely love to have people testing MCW and provide feedback about their experiences using it, especially integrating with other frameworks and libraries.
-
-## License
-
-© Google, 2015. Licensed under an
-[Apache-2](https://github.com/google/material-design-lite/blob/master/LICENSE)
-license.

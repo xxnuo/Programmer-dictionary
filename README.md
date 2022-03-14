@@ -53,9 +53,13 @@
    python export.py
    ```
 
-4. 导入效果
+4. 导入效果（导入欧路词典后）
 
-   <img src="images/README.assets/image-20220314111755616.png" alt="image-20220314111755616" style="zoom:50%;" /><img src="images/README.assets/image-20220314111839282.png" alt="image-20220314111839282" style="zoom:25%;" /><img src="images/README.assets/300DF4DDD149C36C08214B99EDE94108.png" alt="img" style="zoom:25%;" />
+   <img src="images/README.assets/image-20220314111755616.png" alt="image-20220314111755616" style="zoom:50%;" />
+   
+   <img src="images/README.assets/image-20220314111839282.png" alt="image-20220314111839282" style="zoom:25%;" />
+   
+   <img src="images/README.assets/300DF4DDD149C36C08214B99EDE94108.png" alt="img" style="zoom:25%;" />
 
 
 

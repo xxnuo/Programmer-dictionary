@@ -1,9 +1,9 @@
 # Programmer-dictionary
 程序员词典 - Python爬取GitHub仓库README.md内的单词并分析出词库
 
-根索引：GitHub-English-Top-Charts中的 All-Language.md
+根索引：GitHub-English-Top-Charts
 
-直接使用：`export.txt`（空格分隔）和`data\words.txt`（按行分隔），两个内容一样。是我最终处理后获得的文件，可以直接拿来给你的软件导入词库
+直接使用：`export.txt`（空格分隔）。是我最终处理后获得的文件，可以直接拿来给你的软件导入词库
 
 手动更新：
 
